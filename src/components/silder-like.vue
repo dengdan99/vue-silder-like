@@ -41,12 +41,8 @@ export default {
     }
   },
   watch: {
-    $children (val) {
-      console.log(val)
-    }
   },
   mounted () {
-    // console.log(this.$children)
   },
   methods: {
     addCard (item) {

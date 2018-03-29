@@ -100,7 +100,6 @@ export default {
       } else {
         this.cardStyle.left = '0px'
         this.cardStyle.top = '0px'
-        console.log('还原')
       }
     },
     silderToLeft () {
