@@ -8,33 +8,60 @@
 <script>
 export default {
   name: 'silder-like-item',
+  props: {
+  },
   data () {
     return {
       cardStyle: {
         left: 0,
         top: 0,
+        width: '0',
+        height: '0',
         transform: 'scale(1)',
         transition: 'all 0.5s',
         'z-index': 0,
         opacity: 1
       },
-      baseIndex: 1000,
-      topSpace: 40,
+      isSurface: false,
       isShow: true,
       sPos: {y: 0, x: 0},
       mPos: {y: 0, x: 0},
       ePos: {y: 0, x: 0}
     }
   },
+  computed: {
+    dragDistance () {
+      return this.$parent.dragDistance
+    },
+    baseIndex () {
+      return this.$parent.baseIndex
+    },
+    topSpace () {
+      return this.$parent.topSpace
+    },
+    showCardNumber () {
+      return this.$parent.showCardNumber
+    }
+  },
+  created () {
+    this.cardStyle.width = this.$parent.width
+    this.cardStyle.height = this.$parent.height
+  },
   mounted () {
     this.$parent.addCard(this)
-    this.initCardStyle()
-    this.dragInit()
+    this.init()
   },
   methods: {
+    init (index) {
+      this.initCardStyle(index)
+      if (index === 1 || this.$parent.itemCount === 1) {
+        this.isSurface = true
+        this.dragInit()
+      }
+    },
     initCardStyle (index) {
       const _i = index || this.$parent.itemCount
-      if (_i <= 3) {
+      if (_i <= this.showCardNumber) {
         this.isShow = true
         this.cardStyle.top = ((_i - 1) * this.topSpace) + 'px'
         this.cardStyle.transform = 'scale(' + ( 11 - _i ) / 10 + ')'
@@ -64,24 +91,24 @@ export default {
     },
     touchEnd () {
       this.cardStyle.transition = 'all 0.5s'
-      if (this.mPos.x - this.sPos.x < -100) {
+      if (this.mPos.x - this.sPos.x < -this.dragDistance) {
         this.cardStyle.opacity = 0
-        this.like()
-      } else if (this.mPos.x - this.sPos.x > 100) {
+        this.silderToLeft()
+      } else if (this.mPos.x - this.sPos.x > this.dragDistance) {
         this.cardStyle.opacity = 0
-        this.unlike()
+        this.silderToRight()
       } else {
         this.cardStyle.left = '0px'
         this.cardStyle.top = '0px'
         console.log('还原')
       }
     },
-    like () {
-      console.log('喜欢')
+    silderToLeft () {
+      this.$emit('silder-left')
       this.deleteItem()
     },
-    unlike () {
-      console.log('不喜欢')
+    silderToRight () {
+      this.$emit('silder-right')
       this.deleteItem()
     },
     deleteItem () {
@@ -100,10 +127,9 @@ export default {
 <style lang="less" scoped>
 .card{
   position: absolute;
-  width: 330px;
-  height: 330px;
   background-color: #fff;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
   border-radius: 5px;
+  overflow: hidden;
 }
 </style>

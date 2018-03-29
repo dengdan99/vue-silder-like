@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <div class="box-inr">
+    <div class="box-inr" :style="{width, height}">
       <slot></slot>
     </div>
   </div>
@@ -11,8 +11,33 @@ export default {
   name: 'silder-like',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App',
       itemCount: 0
+    }
+  },
+  props: {
+    height: {
+      type: String,
+      default: '330px'
+    },
+    width: {
+      type: String,
+      default: '330px'
+    },
+    dragDistance: {
+      type: Number,
+      default: 100
+    },
+    baseIndex: {
+      type: Number,
+      default: 1000
+    },
+    topSpace: {
+      type: Number,
+      default: 40
+    },
+    showCardNumber: {
+      type: Number,
+      default: 3
     }
   },
   watch: {
@@ -29,7 +54,7 @@ export default {
     },
     removeCard (item) {
       this.itemCount --
-      this.$children.map((item, index) => item.initCardStyle(index + 1))
+      this.$children.map((item, index) => item.init(index + 1))
     }
   }
 }
@@ -38,13 +63,9 @@ export default {
 <style lang="less" scoped>
 .box{
   width: 100%;
-  height: 480px;
-  background-color: #cfcfcf;
   .box-inr{
     position: relative;
     margin: 0 auto;
-    height: 330px;
-    width: 330px;
   }
 }
 </style>

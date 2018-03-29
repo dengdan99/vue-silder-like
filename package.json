@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "author": "leo <dengdan99@gmail.com>",
   "license": "MIT",
-  "private": true,
+  "private": false,
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
@@ -33,5 +33,14 @@
     "vue-template-compiler": "^2.4.4",
     "webpack": "^3.6.0",
     "webpack-dev-server": "^2.9.1"
-  }
+  },
+  "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dengdan99/vue-silder-like.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dengdan99/vue-silder-like/issues"
+  },
+  "homepage": "https://github.com/dengdan99/vue-silder-like#readme"
 }
