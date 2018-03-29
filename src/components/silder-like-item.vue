@@ -1,0 +1,109 @@
+<template>
+  <div class="card" :style="cardStyle" v-show="isShow">
+    <slot></slot>
+    <button @click="deleteItem">删除</button>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'silder-like-item',
+  data () {
+    return {
+      cardStyle: {
+        left: 0,
+        top: 0,
+        transform: 'scale(1)',
+        transition: 'all 0.5s',
+        'z-index': 0,
+        opacity: 1
+      },
+      baseIndex: 1000,
+      topSpace: 40,
+      isShow: true,
+      sPos: {y: 0, x: 0},
+      mPos: {y: 0, x: 0},
+      ePos: {y: 0, x: 0}
+    }
+  },
+  mounted () {
+    this.$parent.addCard(this)
+    this.initCardStyle()
+    this.dragInit()
+  },
+  methods: {
+    initCardStyle (index) {
+      const _i = index || this.$parent.itemCount
+      if (_i <= 3) {
+        this.isShow = true
+        this.cardStyle.top = ((_i - 1) * this.topSpace) + 'px'
+        this.cardStyle.transform = 'scale(' + ( 11 - _i ) / 10 + ')'
+        this.cardStyle['z-index'] = this.baseIndex - _i
+      } else {
+        this.isShow = false
+      }
+    },
+    dragInit () {
+      const $el = this.$el
+      $el.addEventListener('touchstart', this.touchStart, false)
+      $el.addEventListener('touchmove', this.touchMove, false)
+      $el.addEventListener('touchend', this.touchEnd, false)
+    },
+    touchStart () {
+      this.cardStyle.transition = 'none'
+      const touch = event.touches[0]
+      this.sPos.y = touch.pageY
+      this.sPos.x = touch.pageX
+    },
+    touchMove () {
+      const touch = event.touches[0]
+      this.mPos.x = touch.pageX
+      this.mPos.y = touch.pageY
+      this.cardStyle.left = (this.mPos.x - this.sPos.x) + 'px'
+      this.cardStyle.top = (this.mPos.y - this.sPos.y) + 'px'
+    },
+    touchEnd () {
+      this.cardStyle.transition = 'all 0.5s'
+      if (this.mPos.x - this.sPos.x < -100) {
+        this.cardStyle.opacity = 0
+        this.like()
+      } else if (this.mPos.x - this.sPos.x > 100) {
+        this.cardStyle.opacity = 0
+        this.unlike()
+      } else {
+        this.cardStyle.left = '0px'
+        this.cardStyle.top = '0px'
+        console.log('还原')
+      }
+    },
+    like () {
+      console.log('喜欢')
+      this.deleteItem()
+    },
+    unlike () {
+      console.log('不喜欢')
+      this.deleteItem()
+    },
+    deleteItem () {
+      this.$destroy(true)
+    }
+  },
+  destroyed() {
+    if (this.$el && this.$el.parentNode) {
+      this.$el.parentNode.removeChild(this.$el);
+    }
+    this.$parent.removeCard(this);
+  }
+}
+</script>
+
+<style lang="less" scoped>
+.card{
+  position: absolute;
+  width: 330px;
+  height: 330px;
+  background-color: #fff;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+}
+</style>
