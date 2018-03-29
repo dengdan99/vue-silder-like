@@ -3,6 +3,7 @@
 > A Vue component
 
 > 模仿探探，左滑喜欢， 右滑不喜欢
+## [Live demo](https://dengdan99.github.io/vue-silder-like/)
 
 ## Installation
 
