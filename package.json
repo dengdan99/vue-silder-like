@@ -1,7 +1,7 @@
 {
   "name": "vue-silder-like",
   "description": "模仿探探，左滑喜欢， 右滑不喜欢",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "leo <dengdan99@gmail.com>",
   "license": "MIT",
   "private": false,
