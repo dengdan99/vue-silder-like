@@ -15,6 +15,7 @@ export default {
     }
   },
   props: {
+    value: Number,
     height: {
       type: String,
       default: '330px'
@@ -45,12 +46,17 @@ export default {
   mounted () {
   },
   methods: {
-    addCard (item) {
+    addCard () {
       this.itemCount ++
+      this.$emit('input', this.itemCount)
     },
-    removeCard (item) {
+    removeCard () {
       this.itemCount --
       this.$children.map((item, index) => item.init(index + 1))
+      this.$emit('input', this.itemCount)
+    },
+    getTopCard () {
+      return this.$children[0] || null
     }
   }
 }

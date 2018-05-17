@@ -1,7 +1,6 @@
 <template>
-  <div class="card" :style="cardStyle" v-show="isShow">
+  <div class="card" :class="{touched: isTouch}" :style="cardStyle" v-show="isShow">
     <slot></slot>
-    <button @click="deleteItem">删除</button>
   </div>
 </template>
 
@@ -9,9 +8,11 @@
 export default {
   name: 'silder-like-item',
   props: {
+    extData: [Number, String, Object]
   },
   data () {
     return {
+      isTouch: false,
       cardStyle: {
         left: 0,
         top: 0,
@@ -64,7 +65,7 @@ export default {
       if (_i <= this.showCardNumber) {
         this.isShow = true
         this.cardStyle.top = ((_i - 1) * this.topSpace) + 'px'
-        this.cardStyle.transform = 'scale(' + ( 11 - _i ) / 10 + ')'
+        this.cardStyle.transform = 'scale(' + (11 - _i) / 10 + ')'
         this.cardStyle['z-index'] = this.baseIndex - _i
       } else {
         this.isShow = false
@@ -77,6 +78,7 @@ export default {
       $el.addEventListener('touchend', this.touchEnd, false)
     },
     touchStart () {
+      this.isTouch = true
       this.cardStyle.transition = 'none'
       const touch = event.touches[0]
       this.sPos.y = touch.pageY
@@ -86,15 +88,26 @@ export default {
       const touch = event.touches[0]
       this.mPos.x = touch.pageX
       this.mPos.y = touch.pageY
-      this.cardStyle.left = (this.mPos.x - this.sPos.x) + 'px'
-      this.cardStyle.top = (this.mPos.y - this.sPos.y) + 'px'
+      const disX = this.mPos.x - this.sPos.x
+      const disY = this.mPos.y - this.sPos.y
+      let rotate = 0
+      if (disX > 0) {
+        rotate = rotate > 3 ? rotate : disX * 0.05
+      } else {
+        rotate = rotate < -3 ? rotate : disX * 0.05
+      }
+      this.cardStyle.transform = 'scale(1) rotate(' + rotate + 'deg)'
+      this.cardStyle.left = disX + 'px'
+      this.cardStyle.top = disY + 'px'
     },
     touchEnd () {
+      this.isTouch = false
       this.cardStyle.transition = 'all 0.5s'
-      if (this.mPos.x - this.sPos.x < -this.dragDistance) {
+      this.cardStyle.transform = this.cardStyle.transform.split(' ')[0] || 'scale(1)'
+      if (parseInt(this.cardStyle.left) < -this.dragDistance) {
         this.cardStyle.opacity = 0
         this.silderToLeft()
-      } else if (this.mPos.x - this.sPos.x > this.dragDistance) {
+      } else if (parseInt(this.cardStyle.left) > this.dragDistance) {
         this.cardStyle.opacity = 0
         this.silderToRight()
       } else {
@@ -114,11 +127,11 @@ export default {
       this.$destroy(true)
     }
   },
-  destroyed() {
+  destroyed () {
     if (this.$el && this.$el.parentNode) {
-      this.$el.parentNode.removeChild(this.$el);
+      this.$el.parentNode.removeChild(this.$el)
     }
-    this.$parent.removeCard(this);
+    this.$parent.removeCard(this)
   }
 }
 </script>
@@ -130,5 +143,7 @@ export default {
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
   border-radius: 5px;
   overflow: hidden;
+  &.touched{
+  }
 }
 </style>

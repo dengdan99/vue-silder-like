@@ -2,11 +2,12 @@ var path = require('path')
 var webpack = require('webpack')
 
 module.exports = {
-  entry: './demo/main.js',
+  entry: './src/index.js',
   output: {
-    path: path.resolve(__dirname, './demo-dist'),
-    publicPath: '/vue-silder-like/dist/',
-    filename: 'build.js'
+    path: path.resolve(__dirname, './dist'),
+    filename: '[name].js',
+    library: 'VueSilderLike',
+    libraryTarget: 'umd'
   },
   module: {
     rules: [
