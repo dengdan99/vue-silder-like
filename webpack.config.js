@@ -5,7 +5,7 @@ module.exports = {
   entry: './demo/main.js',
   output: {
     path: path.resolve(__dirname, './demo-dist'),
-    publicPath: '/vue-silder-like/dist/',
+    publicPath: '/vue-silder-like/demo-dist/',
     filename: 'build.js'
   },
   module: {
